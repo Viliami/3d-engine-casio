@@ -66,3 +66,28 @@ class Vector3{
             return this->dot(n)*n;
         }
 };
+
+class Vector2{
+    public:
+        float x, y;
+        Vector2(float x = 0, float y = 0){
+            this->x = x;
+            this->y = y;
+        }
+        
+        Vector2 operator+(Vector2 other){
+            return Vector2(this->x + other.x, this->y + other.y);
+        }
+        
+        Vector2 operator-(Vector2 other){
+            return Vector2(this->x - other.x, this->y - other.y);
+        }
+        
+        Vector2 operator*(Vector2 other){
+            return Vector2(this->x * other.x, this->y * other.y);
+        }
+        
+        Vector2 operator/(Vector2 other){
+            return Vector2(this->x / other.x, this->y / other.y);
+        }
+};
