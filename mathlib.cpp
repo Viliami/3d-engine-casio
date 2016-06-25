@@ -193,6 +193,61 @@ class Matrix4{
             return v;
         }
         
+        Matrix4 multiply(Matrix4 other){
+            double Aa = this->a;
+            double Ab = this->b;
+            double Ac = this->c;
+            double Ad = this->d;
+            double Ae = this->e;
+            double Af = this->f;
+            double Ag = this->g;
+            double Ah = this->h;
+            double Ai = this->i;
+            double Aj = this->j;
+            double Ak = this->k;
+            double Al = this->l;
+            double Am = this->m;
+            double An = this->n;
+            double Ao = this->o;
+            double Ap = this->p;
+            
+            double Ba = other.a;
+            double Bb = other.b;
+            double Bc = other.c;
+            double Bd = other.d;
+            double Be = other.e;
+            double Bf = other.f;
+            double Bg = other.g;
+            double Bh = other.h;
+            double Bi = other.i;
+            double Bj = other.j;
+            double Bk = other.k;
+            double Bl = other.l;
+            double Bm = other.m;
+            double Bn = other.n;
+            double Bo = other.o;
+            double Bp = other.p;
+            
+            Matrix4 c = Matrix4();
+            c.a = Aa * Ba + Ab * Be + Ac * Bi + Ad * Bm;
+            c.b = Aa * Bb + Ab * Bf + Ac * Bj + Ad * Bn;
+            c.c = Aa * Bc + Ab * Bg + Ac * Bk + Ad * Bo;
+            c.d = Aa * Bd + Ab * Bh + Ac * Bl + Ad * Bp;
+            c.e = Ae * Ba + Af * Be + Ag * Bi + Ah * Bm;
+            c.f = Ae * Bb + Af * Bf + Ag * Bj + Ah * Bn;
+            c.g = Ae * Bc + Af * Bg + Ag * Bk + Ah * Bo;
+            c.h = Ae * Bd + Af * Bh + Ag * Bl + Ah * Bp;
+            c.i = Ai * Ba + Aj * Be + Ak * Bi + Al * Bm;
+            c.j = Ai * Bb + Aj * Bf + Ak * Bj + Al * Bn;
+            c.k = Ai * Bc + Aj * Bg + Ak * Bk + Al * Bo;
+            c.l = Ai * Bd + Aj * Bh + Ak * Bl + Al * Bp;
+            c.m = Am * Ba + An * Be + Ao * Bi + Ap * Bm;
+            c.n = Am * Bb + An * Bf + Ao * Bj + Ap * Bn;
+            c.o = Am * Bc + An * Bg + Ao * Bk + Ap * Bo;
+            c.p = Am * Bd + An * Bh + Ao * Bl + Ap * Bp;
+            return c;
+        }
+        
         Matrix4 new_rotatex(double angle){
             Matrix4 a = *this;
             double s = sin(angle);
@@ -305,6 +360,14 @@ class Matrix4{
             return a;
         }
         
+        Matrix4 new_translate(double x, double y, double z){
+            Matrix4 a = *this;
+            a.d = x;
+            a.h = y;
+            a.l = z;
+            return a;
+        }
+        
         Matrix4 rotatex(double angle){
             *this = *this * Matrix4().new_rotatex(angle);
             return *this;
@@ -327,6 +390,29 @@ class Matrix4{
         
         Matrix4 rotate_euler(double heading, double attitude, double bank){
             *this = *this * Matrix4().new_rotate_euler(heading, attitude, bank);
+            return *this;
+        }
+        
+        Vector3 transform(Vector3 other){
+            Matrix4 a = *this;
+            Vector3 b = other;
+            Vector3 p = Vector3(0,0,0);
+            p.x = a.a * b.x + a.b * b.y + a.c * b.z + a.d;
+            p.y = a.e * b.x + a.f * b.y + a.g * b.z + a.h;
+            p.z = a.i * b.x + a.j * b.y + a.k * b.z + a.l;
+            /*double w = a.m * b.x + a.n * b.y + a.o * b.z + a.p;
+            
+            if(w != 0){
+                p.x /= w;
+                p.y /= w;
+                p.z /= w;
+            }
+            */
+            return p;
+        }
+        
+        Matrix4 translate(double x, double y, double z){
+            *this = Matrix4().new_translate(x, y, z);
             return *this;
         }
 };
