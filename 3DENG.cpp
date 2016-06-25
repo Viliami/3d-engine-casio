@@ -26,21 +26,19 @@ extern "C"{
 //
 //****************************************************************************
 
-class Rectangle {
-    int width, height;
-    public:
-        void set_values (int,int);
-        int area (void);
-};
-
-extern "C"{
-    void clear_screen(){
-        Bdisp_AllClr_DDVRAM();
-    }
-}
-
 void main(){
-    clear_screen();
+    Engine eng = Engine();
+    Camera cam = Camera();
+    Mesh mesh = Mesh(8);
+    
+    while(true){
+        eng.clear();
+        
+        eng.render(cam, mesh);
+        
+        eng.present();
+    }
+    
 }
 
 extern "C"{
