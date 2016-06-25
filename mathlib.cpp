@@ -1,3 +1,4 @@
+#pragma once
 #include <math.h>
 
 class Vector3{
@@ -279,6 +280,31 @@ class Matrix4{
             return a;
         }
         
+        Matrix4 new_look_at(Vector3 eye, Vector3 at, Vector3 up){
+            Vector3 z = (eye - at).normalize();
+            Vector3 x = up.cross(z).normalize();
+            Vector3 y = z.cross(x);
+            Matrix4 a = Matrix4().new_rotate_triple_axis(x, y, z);
+            a.d = eye.x;
+            a.h = eye.y;
+            a.l = eye.z;
+            return a;
+        }
+        
+        Matrix4 new_perspective(double fov_y, double aspect, double near, double far){
+            float f = 1.0 / tan(fov_y/2.0);
+            Matrix4 a = *this;
+            if(near != 0.0 && near != far){
+                a.a = f / aspect;
+                a.f = f;
+                a.k = (far + near) / (near - far);
+                a.l = 2 * far * near / (near - far);
+                a.o = -1;
+                a.p = 0;
+            }
+            return a;
+        }
+        
         Matrix4 rotatex(double angle){
             *this = *this * Matrix4().new_rotatex(angle);
             return *this;
@@ -295,12 +321,12 @@ class Matrix4{
         }
         
         Matrix4 rotate_axis(double angle, Vector3 axis){
-            *this = *this * Matrix4.new_rotate_axis(angle, axis);
+            *this = *this * Matrix4().new_rotate_axis(angle, axis);
             return *this;
         }
         
         Matrix4 rotate_euler(double heading, double attitude, double bank){
-            *this = *this * Matrix4.new_rotate_euler();
+            *this = *this * Matrix4().new_rotate_euler(heading, attitude, bank);
             return *this;
         }
 };
