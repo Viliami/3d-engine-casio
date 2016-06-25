@@ -119,3 +119,68 @@ class Vector2{
             return n*this->dot(n);
         }
 };
+
+class Matrix4{
+    public:
+        float a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
+        
+        Matrix4(){
+            
+        }
+        
+        Matrix4 operator * (Matrix4 other){
+            double Aa = this->a;
+            double Ab = this->b;
+            double Ac = this->c;
+            double Ad = this->d;
+            double Ae = this->e;
+            double Af = this->f;
+            double Ag = this->g;
+            double Ah = this->h;
+            double Ai = this->i;
+            double Aj = this->j;
+            double Ak = this->k;
+            double Al = this->l;
+            double Am = this->m;
+            double An = this->n;
+            double Ao = this->o;
+            double Ap = this->p;
+            
+            double Ba = other.a;
+            double Bb = other.b;
+            double Bc = other.c;
+            double Bd = other.d;
+            double Be = other.e;
+            double Bf = other.f;
+            double Bg = other.g;
+            double Bh = other.h;
+            double Bi = other.i;
+            double Bj = other.j;
+            double Bk = other.k;
+            double Bl = other.l;
+            double Bm = other.m;
+            double Bn = other.n;
+            double Bo = other.o;
+            double Bp = other.p;
+            
+            Matrix4 c = Matrix4();
+            c.a = Aa * Ba + Ab * Be + Ac * Bi + Ad * Bm;
+            c.b = Aa * Bb + Ab * Bf + Ac * Bj + Ad * Bn;
+            c.c = Aa * Bc + Ab * Bg + Ac * Bk + Ad * Bo;
+            c.d = Aa * Bd + Ab * Bh + Ac * Bl + Ad * Bp;
+            c.e = Ae * Ba + Af * Be + Ag * Bi + Ah * Bm;
+            c.f = Ae * Bb + Af * Bf + Ag * Bj + Ah * Bn;
+            c.g = Ae * Bc + Af * Bg + Ag * Bk + Ah * Bo;
+            c.h = Ae * Bd + Af * Bh + Ag * Bl + Ah * Bp;
+            c.i = Ai * Ba + Aj * Be + Ak * Bi + Al * Bm;
+            c.j = Ai * Bb + Aj * Bf + Ak * Bj + Al * Bn;
+            c.k = Ai * Bc + Aj * Bg + Ak * Bk + Al * Bo;
+            c.l = Ai * Bd + Aj * Bh + Ak * Bl + Al * Bp;
+            c.m = Am * Ba + An * Be + Ao * Bi + Ap * Bm;
+            c.n = Am * Bb + An * Bf + Ao * Bj + Ap * Bn;
+            c.o = Am * Bc + An * Bg + Ao * Bk + Ap * Bo;
+            c.p = Am * Bd + An * Bh + Ao * Bl + Ap * Bp;
+            
+            return c;
+        }
+};
