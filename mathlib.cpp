@@ -75,19 +75,47 @@ class Vector2{
             this->y = y;
         }
         
-        Vector2 operator+(Vector2 other){
+        Vector2 operator + (Vector2 other){
             return Vector2(this->x + other.x, this->y + other.y);
         }
         
-        Vector2 operator-(Vector2 other){
+        Vector2 operator - (Vector2 other){
             return Vector2(this->x - other.x, this->y - other.y);
         }
         
-        Vector2 operator*(Vector2 other){
-            return Vector2(this->x * other.x, this->y * other.y);
+        Vector2 operator * (double other){
+            return Vector2(this->x * other, this->y * other);
         }
         
-        Vector2 operator/(Vector2 other){
-            return Vector2(this->x / other.x, this->y / other.y);
+        Vector2 operator / (double other){
+            return Vector2(this->x / other, this->y / other);
+        }
+        
+        double magnitude(){
+            return sqrt((this->x * this->x) +
+                        (this->y * this->y));
+        }
+        
+        Vector2 normalize(){
+            double d = this->magnitude();
+            if(d != 0){
+                this->x /= d;
+                this->y /= d;
+            }
+            return *this;
+        }
+        
+        double dot(Vector2 other){
+            return this->x * other.x +
+                   this->y * other.y;
+        }
+        
+        Vector2 cross(){
+            return Vector2(this->y, -this->x);
+        }
+        
+        Vector2 project(Vector2 other){
+            Vector2 n = other.normalize();
+            return n*this->dot(n);
         }
 };
