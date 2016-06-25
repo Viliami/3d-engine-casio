@@ -26,20 +26,56 @@ extern "C"{
 //
 //****************************************************************************
 
+unsigned int key;
+
+extern "C"{
+    void get_key(){
+        GetKey(&key); 
+    }
+}
+
+bool handle_keys(){
+    if(key == KEY_CTRL_EXIT){
+        return false;
+    }
+    if(key == KEY_CTRL_MENU){
+        return false;
+    }
+    return true;
+}
+
 void main(){
     Engine eng = Engine();
     Camera cam = Camera();
     Mesh mesh = Mesh(8);
-    
-    while(true){
+    mesh.vertices[0] = Vector3(-1,1,1);
+    mesh.vertices[1] = Vector3(1,1,1);
+    mesh.vertices[2] = Vector3(-1,-1,1);
+    mesh.vertices[3] = Vector3(-1,-1,-1);
+    mesh.vertices[4] = Vector3(-1,1,-1);
+    mesh.vertices[5] = Vector3(1,1,-1);
+    mesh.vertices[6] = Vector3(1,-1,1);
+    mesh.vertices[7] = Vector3(1,-1,-1);
+    Mesh meshes[1];
+    meshes[0] = mesh;
+    cam.position = Vector3(0,0,10);
+    cam.target = Vector3(0,0,0);
+    while(handle_keys()){
         eng.clear();
+        get_key();
         
-        eng.render(cam, mesh);
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
+        
+        eng.render(cam, meshes);
         
         eng.present();
     }
     
 }
+
+
+
 
 extern "C"{
     int AddIn_main(int isAppli, unsigned short OptionNum)
