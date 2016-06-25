@@ -1,23 +1,17 @@
 #include "mathlib.cpp"
-#include <string>
+#include "camera.h"
+#include "mesh.h"
 
 class Engine{
     public:
-        Engine();
+        int width;
+        int height;
+        Engine(int width = 128, int height = 64);
+        void clear();
+        void present();
+        void put_pixel(int x, int y, int color);
+        Vector2 project(Vector3 coord, Matrix4 transMat);
+        void draw_point(Vector2 point);
+        void render(Camera camera, Mesh meshes);
         
-        class Camera{
-            public:
-                Vector3 position;
-                Vector3 target;
-                Camera();
-        };
-        
-        class Mesh{
-            public:
-                string name;
-                Vector3 vertices[10];
-                Vector3 position;
-                Vector3 rotation;
-                Mesh(string name, int verticesCount);
-        };
 };
