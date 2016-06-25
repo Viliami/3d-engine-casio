@@ -180,7 +180,127 @@ class Matrix4{
             c.n = Am * Bb + An * Bf + Ao * Bj + Ap * Bn;
             c.o = Am * Bc + An * Bg + Ao * Bk + Ap * Bo;
             c.p = Am * Bd + An * Bh + Ao * Bl + Ap * Bp;
-            
             return c;
+        }
+        
+        Vector3 operator * (Vector3 b){
+            Matrix4 a = *this;
+            Vector3 v = Vector3(0,0,0);
+            v.x = a.a * b.x + a.b * b.y + a.c * b.z;
+            v.y = a.e * b.x + a.f * b.y + a.g * b.z;
+            v.z = a.i * b.x + a.j * b.y + a.k * b.z;
+            return v;
+        }
+        
+        Matrix4 new_rotatex(double angle){
+            Matrix4 a = *this;
+            double s = sin(angle);
+            double c = cos(angle);
+            a.f = a.k = c;
+            a.g = -s;
+            a.j = s;
+            return a;
+        }
+        
+        Matrix4 new_rotatey(double angle){
+            Matrix4 a = *this;
+            double s = sin(angle);
+            double c = cos(angle);
+            a.a = a.k = c;
+            a.c = s;
+            a.i -s;
+            return a;
+        }
+        
+        Matrix4 new_rotatez(double angle){
+            Matrix4 a = *this;
+            double s = sin(angle);
+            double c = cos(angle);
+            a.a = a.f = c;
+            a.b  = -s;
+            a.e = s;
+            return a;
+        }
+        
+        Matrix4 new_rotate_axis(double angle, Vector3 axis){
+            Vector3 vector = axis.normalize();
+            double x = vector.x;
+            double y = vector.y;
+            double z = vector.z;
+            double s = sin(angle);
+            double c = cos(angle);
+            Matrix4 a = *this;
+            double c1 = 1.0 - c;
+            
+            a.a = x * x * c1 + c;
+            a.b = x * y * c1 - z * s;
+            a.c = x * z * c1 + y * s;
+            a.e = y * x * c1 + z * s;
+            a.f = y * y * c1 + c;
+            a.g = y * z * c1 - x * s;
+            a.i = x * z * c1 - y * s;
+            a.j = y * z * c1 + x * s;
+            a.k = z * z * c1 + c;
+            return a;
+        }
+        
+        Matrix4 new_rotate_euler(double heading, double attitude, double bank){
+            double ch = cos(heading);
+            double sh = sin(heading);
+            double ca = cos(attitude);
+            double sa = sin(attitude);
+            double cb = cos(bank);
+            double sb = sin(bank);
+            
+            Matrix4 a = *this;
+            a.a = ch * ca;
+            a.b = sh * sb - ch * sa * cb;
+            a.c = ch * sa * sb + sh * cb;
+            a.e = sa;
+            a.f = ca * cb;
+            a.g = -ca * sb;
+            a.i = -sh * ca;
+            a.j = sh * sa * cb + ch * sb;
+            a.k = -sh * sa * sb + ch * cb;
+            return a;
+        }
+        
+        Matrix4 new_rotate_triple_axis(Vector3 x, Vector3 y, Vector3 z){
+            Matrix4 a = *this;
+            a.a = x.x;
+            a.b = y.x;
+            a.c = z.x;
+            a.e = x.y;
+            a.f = y.y;
+            a.g = z.y;
+            a.i = x.z;
+            a.j = y.z;
+            a.k = z.z;
+            return a;
+        }
+        
+        Matrix4 rotatex(double angle){
+            *this = *this * Matrix4().new_rotatex(angle);
+            return *this;
+        }
+        
+        Matrix4 rotatey(double angle){
+            *this = *this * Matrix4().new_rotatey(angle);
+            return *this;
+        }
+        
+        Matrix4 rotatez(double angle){
+            *this = *this * Matrix4().new_rotatez(angle);
+            return *this;
+        }
+        
+        Matrix4 rotate_axis(double angle, Vector3 axis){
+            *this = *this * Matrix4.new_rotate_axis(angle, axis);
+            return *this;
+        }
+        
+        Matrix4 rotate_euler(double heading, double attitude, double bank){
+            *this = *this * Matrix4.new_rotate_euler();
+            return *this;
         }
 };
