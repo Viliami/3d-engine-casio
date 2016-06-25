@@ -27,14 +27,14 @@ extern "C"{
 
 void Engine::draw_point(Vector2 point){
     if(point.x >= 0 && point.y >= 0 && point.x < this->width && point.y < this->height){
-        Bdisp_SetPoint_VRAM(point.x, point.y, BLACK);
+        this->put_pixel(point.x, point.y, BLACK);
     }
 }
 
 Vector2 Engine::project(Vector3 coord, Matrix4 transMat){
     Vector3 point = transMat.transform(coord);
-    double x = point.x * (this->width/128.0) + (this->width/2.0); 
-    double y = point.y * (this->height/128.0)+ (this->width/2.0);
+    double x = point.x * (this->width/64.0) + (this->width/2.0); 
+    double y = point.y * (this->height/64.0)+ (this->height/2.0);
     return Vector2(x, y); 
 }
 
@@ -70,22 +70,22 @@ void Engine::render(Camera camera, Mesh meshes[]){
         
         Matrix4 transformMatrix;
         
-        transformMatrix.a = transformMatrix.a * viewMatrix.a + transformMatrix.b * viewMatrix.e + transformMatrix.c * viewMatrix.i + transformMatrix.d * viewMatrix.m;
-        transformMatrix.b = transformMatrix.a * viewMatrix.b + transformMatrix.b * viewMatrix.f + transformMatrix.c * viewMatrix.j + transformMatrix.d * viewMatrix.n;
-        transformMatrix.c = transformMatrix.a * viewMatrix.c + transformMatrix.b * viewMatrix.g + transformMatrix.c * viewMatrix.k + transformMatrix.d * viewMatrix.o;
-        transformMatrix.d = transformMatrix.a * viewMatrix.d + transformMatrix.b * viewMatrix.h + transformMatrix.c * viewMatrix.l + transformMatrix.d * viewMatrix.p;
-        transformMatrix.e = transformMatrix.e * viewMatrix.a + transformMatrix.f * viewMatrix.e + transformMatrix.g * viewMatrix.i + transformMatrix.h * viewMatrix.m;
-        transformMatrix.f = transformMatrix.e * viewMatrix.b + transformMatrix.f * viewMatrix.f + transformMatrix.g * viewMatrix.j + transformMatrix.h * viewMatrix.n;
-        transformMatrix.g = transformMatrix.e * viewMatrix.c + transformMatrix.f * viewMatrix.g + transformMatrix.g * viewMatrix.k + transformMatrix.h * viewMatrix.o;
-        transformMatrix.h = transformMatrix.e * viewMatrix.d + transformMatrix.f * viewMatrix.h + transformMatrix.g * viewMatrix.l + transformMatrix.h * viewMatrix.p;
-        transformMatrix.i = transformMatrix.i * viewMatrix.a + transformMatrix.j * viewMatrix.e + transformMatrix.k * viewMatrix.i + transformMatrix.l * viewMatrix.m;
-        transformMatrix.j = transformMatrix.i * viewMatrix.b + transformMatrix.j * viewMatrix.f + transformMatrix.k * viewMatrix.j + transformMatrix.l * viewMatrix.n;
-        transformMatrix.k = transformMatrix.i * viewMatrix.c + transformMatrix.j * viewMatrix.g + transformMatrix.k * viewMatrix.k + transformMatrix.l * viewMatrix.o;
-        transformMatrix.l = transformMatrix.i * viewMatrix.d + transformMatrix.j * viewMatrix.h + transformMatrix.k * viewMatrix.l + transformMatrix.l * viewMatrix.p;
-        transformMatrix.m = transformMatrix.m * viewMatrix.a + transformMatrix.n * viewMatrix.e + transformMatrix.o * viewMatrix.i + transformMatrix.p * viewMatrix.m;
-        transformMatrix.n = transformMatrix.m * viewMatrix.b + transformMatrix.n * viewMatrix.f + transformMatrix.o * viewMatrix.j + transformMatrix.p * viewMatrix.n;
-        transformMatrix.o = transformMatrix.m * viewMatrix.c + transformMatrix.n * viewMatrix.g + transformMatrix.o * viewMatrix.k + transformMatrix.p * viewMatrix.o;
-        transformMatrix.p = transformMatrix.m * viewMatrix.d + transformMatrix.n * viewMatrix.h + transformMatrix.o * viewMatrix.l + transformMatrix.p * viewMatrix.p;
+        transformMatrix.a = worldMatrix.a * viewMatrix.a + worldMatrix.b * viewMatrix.e + worldMatrix.c * viewMatrix.i + worldMatrix.d * viewMatrix.m;
+        transformMatrix.b = worldMatrix.a * viewMatrix.b + worldMatrix.b * viewMatrix.f + worldMatrix.c * viewMatrix.j + worldMatrix.d * viewMatrix.n;
+        transformMatrix.c = worldMatrix.a * viewMatrix.c + worldMatrix.b * viewMatrix.g + worldMatrix.c * viewMatrix.k + worldMatrix.d * viewMatrix.o;
+        transformMatrix.d = worldMatrix.a * viewMatrix.d + worldMatrix.b * viewMatrix.h + worldMatrix.c * viewMatrix.l + worldMatrix.d * viewMatrix.p;
+        transformMatrix.e = worldMatrix.e * viewMatrix.a + worldMatrix.f * viewMatrix.e + worldMatrix.g * viewMatrix.i + worldMatrix.h * viewMatrix.m;
+        transformMatrix.f = worldMatrix.e * viewMatrix.b + worldMatrix.f * viewMatrix.f + worldMatrix.g * viewMatrix.j + worldMatrix.h * viewMatrix.n;
+        transformMatrix.g = worldMatrix.e * viewMatrix.c + worldMatrix.f * viewMatrix.g + worldMatrix.g * viewMatrix.k + worldMatrix.h * viewMatrix.o;
+        transformMatrix.h = worldMatrix.e * viewMatrix.d + worldMatrix.f * viewMatrix.h + worldMatrix.g * viewMatrix.l + worldMatrix.h * viewMatrix.p;
+        transformMatrix.i = worldMatrix.i * viewMatrix.a + worldMatrix.j * viewMatrix.e + worldMatrix.k * viewMatrix.i + worldMatrix.l * viewMatrix.m;
+        transformMatrix.j = worldMatrix.i * viewMatrix.b + worldMatrix.j * viewMatrix.f + worldMatrix.k * viewMatrix.j + worldMatrix.l * viewMatrix.n;
+        transformMatrix.k = worldMatrix.i * viewMatrix.c + worldMatrix.j * viewMatrix.g + worldMatrix.k * viewMatrix.k + worldMatrix.l * viewMatrix.o;
+        transformMatrix.l = worldMatrix.i * viewMatrix.d + worldMatrix.j * viewMatrix.h + worldMatrix.k * viewMatrix.l + worldMatrix.l * viewMatrix.p;
+        transformMatrix.m = worldMatrix.m * viewMatrix.a + worldMatrix.n * viewMatrix.e + worldMatrix.o * viewMatrix.i + worldMatrix.p * viewMatrix.m;
+        transformMatrix.n = worldMatrix.m * viewMatrix.b + worldMatrix.n * viewMatrix.f + worldMatrix.o * viewMatrix.j + worldMatrix.p * viewMatrix.n;
+        transformMatrix.o = worldMatrix.m * viewMatrix.c + worldMatrix.n * viewMatrix.g + worldMatrix.o * viewMatrix.k + worldMatrix.p * viewMatrix.o;
+        transformMatrix.p = worldMatrix.m * viewMatrix.d + worldMatrix.n * viewMatrix.h + worldMatrix.o * viewMatrix.l + worldMatrix.p * viewMatrix.p;
 
         //transformMatrix = transformMatrix * projectionMatrix;
         
@@ -110,7 +110,7 @@ void Engine::render(Camera camera, Mesh meshes[]){
         //for(int j = 0; j <= sizeof(mesh.vertices)/sizeof(mesh.vertices[0]); j++){
         for(int j = 0; j <= 7; j++){
             Vector2 point = this->project(mesh.vertices[j], transformMatrix);
-            this->draw_point(point);
+            this->put_pixel(point.x, point.y, BLACK);
         }
     }
 }
