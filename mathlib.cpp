@@ -3,32 +3,32 @@
 
 class Vector3{
     public:
-        float x, y, z;
-        Vector3(float x = 0, float y = 0, float z = 0){
+        double x, y, z;
+        Vector3(double x = 0, double y = 0, double z = 0){
             this->x = x;
             this->y = y;
             this->z = z;
         }
         
-        Vector3 operator+(Vector3 other){
+        Vector3 operator + (Vector3 other){
             return Vector3(this->x + other.x,
                            this->y + other.y,
                            this->z + other.z);
         }
         
-        Vector3 operator-(Vector3 other){
+        Vector3 operator - (Vector3 other){
             return Vector3(this->x - other.x,
                            this->y - other.y,
                            this->z - other.z); 
         }
         
-        Vector3 operator*(Vector3 other){
+        Vector3 operator * (Vector3 other){
             return Vector3(this->x * other.x,
                            this->y * other.y,
                            this->z * other.z);
         }
         
-        Vector3 operator/(Vector3 other){
+        Vector3 operator / (Vector3 other){
             return Vector3(this->x / other.x,
                            this->y / other.y,
                            this->z / other.z);
@@ -70,8 +70,8 @@ class Vector3{
 
 class Vector2{
     public:
-        float x, y;
-        Vector2(float x = 0, float y = 0){
+        double x, y;
+        Vector2(double x = 0, double y = 0){
             this->x = x;
             this->y = y;
         }
@@ -123,7 +123,7 @@ class Vector2{
 
 class Matrix4{
     public:
-        float a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
+        double a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
         
         Matrix4(){
             
@@ -181,6 +181,7 @@ class Matrix4{
             c.n = Am * Bb + An * Bf + Ao * Bj + Ap * Bn;
             c.o = Am * Bc + An * Bg + Ao * Bk + Ap * Bo;
             c.p = Am * Bd + An * Bh + Ao * Bl + Ap * Bp;
+            
             return c;
         }
         
@@ -252,7 +253,8 @@ class Matrix4{
             Matrix4 a = *this;
             double s = sin(angle);
             double c = cos(angle);
-            a.f = a.k = c;
+            a.f = a.k;
+            a.k = c;
             a.g = -s;
             a.j = s;
             return a;
@@ -262,7 +264,8 @@ class Matrix4{
             Matrix4 a = *this;
             double s = sin(angle);
             double c = cos(angle);
-            a.a = a.k = c;
+            a.a = a.k;
+            a.k = c;
             a.c = s;
             a.i -s;
             return a;
@@ -272,7 +275,8 @@ class Matrix4{
             Matrix4 a = *this;
             double s = sin(angle);
             double c = cos(angle);
-            a.a = a.f = c;
+            a.a = a.f;
+            a.f = c;
             a.b  = -s;
             a.e = s;
             return a;
