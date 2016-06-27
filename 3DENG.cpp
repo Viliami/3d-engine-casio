@@ -27,6 +27,8 @@ extern "C"{
 //****************************************************************************
 
 unsigned int key;
+Mesh mesh = Mesh(8);
+Mesh meshes[1];
 
 extern "C"{
     void get_key(){
@@ -47,25 +49,39 @@ bool handle_keys(){
 void main(){
     Engine eng = Engine();
     Camera cam = Camera();
-    Mesh mesh = Mesh(8);
-    mesh.vertices[0] = Vector3(-1,1,1);
-    mesh.vertices[1] = Vector3(1,1,1);
+    mesh.vertices[0] = Vector3(-1, 1, 1); 
+    mesh.vertices[1] = Vector3(1, 1, 1); 
     mesh.vertices[2] = Vector3(-1,-1,1);
-    mesh.vertices[3] = Vector3(-1,-1,-1);
-    mesh.vertices[4] = Vector3(-1,1,-1);
+    mesh.vertices[3] = Vector3(1,-1,1);
+    mesh.vertices[4] = Vector3(-1, 1, -1);
     mesh.vertices[5] = Vector3(1,1,-1);
-    mesh.vertices[6] = Vector3(1,-1,1);
-    mesh.vertices[7] = Vector3(1,-1,-1);
-    Mesh meshes[1];
+    mesh.vertices[6] = Vector3(1,-1,-1);
+    mesh.vertices[7] = Vector3(-1,-1,-1);
+    
+    mesh.faces[0] = Face(0, 1, 2);
+    mesh.faces[1] = Face(1, 2, 3);
+    mesh.faces[2] = Face(1, 3, 6);
+    mesh.faces[3] = Face(1, 5, 6);
+    mesh.faces[4] = Face(0, 1, 4);
+    mesh.faces[5] = Face(1, 4, 5);
+
+    mesh.faces[6] = Face(2, 3, 7);
+    mesh.faces[7] = Face(3, 6, 7);
+    mesh.faces[8] = Face(0, 2, 7);
+    mesh.faces[9] = Face(0, 4, 7);
+    mesh.faces[10]= Face(4, 5, 6);
+    mesh.faces[11]= Face(4, 6, 7);
+    
     meshes[0] = mesh;
     cam.position = Vector3(0,0,10);
     cam.target = Vector3(0,0,0);
     while(handle_keys()){
         eng.clear();
-        get_key();
+        //get_key();
         
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.01;
+        mesh.rotation.x += 0.02;
+        mesh.rotation.y += 0.02;
+        meshes[0] = mesh;
         
         eng.render(cam, meshes);
         
