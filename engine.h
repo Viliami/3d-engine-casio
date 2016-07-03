@@ -1,7 +1,9 @@
 #include "mathlib.cpp"
 #include "camera.h"
 #include "mesh.h"
-
+extern "C"{
+#include "fxlib.h"
+}
 class Engine{
     public:
         int width;
@@ -14,5 +16,6 @@ class Engine{
         Vector2 project(Vector3 coord, Matrix4 transMat);
         void draw_point(Vector2 point);
         void render(Camera camera, Mesh meshes[]);
+        Mesh load_obj(const FONTCHARACTER *filename);
         
 };
