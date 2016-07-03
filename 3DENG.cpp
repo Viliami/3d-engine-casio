@@ -10,6 +10,8 @@
 
 extern "C"{
 #include "fxlib.h"
+#include "stdio.h"
+#include "stdlib.h"
 }
 #include "engine.h"
 
@@ -26,24 +28,63 @@ extern "C"{
 //
 //****************************************************************************
 
-unsigned int key;
+unsigned int key1, key2, unused;
 Mesh mesh = Mesh(8);
 Mesh meshes[1];
 
 extern "C"{
-    void get_key(){
-        GetKey(&key); 
+    bool handle_keys(){
+        //Bkey_GetKeyWait(&key1, &key2, KEYWAIT_HALTOFF_TIMEROFF, 0, 1, &unused);
+        if(key1 == 4 && key2 == 8){
+            return false;
+        }
+        if(key1 == 4 && key2 == 9){
+            return false;
+        }
+        return true;
     }
-}
+    
+    void draw_text(unsigned char* text, int x, int y){
+        locate(x,y);
+        Print(text);
+    }
+    
+    int itoa(int value, char *sp, int radix)
+{
+    char tmp[16];// be careful with the length of the buffer
+    char *tp = tmp;
+    int i;
+    unsigned v;
 
-bool handle_keys(){
-    if(key == KEY_CTRL_EXIT){
-        return false;
+    int sign = (radix == 10 && value < 0);    
+    if (sign)
+        v = -value;
+    else
+        v = (unsigned)value;
+
+    while (v || tp == tmp)
+    {
+        i = v % radix;
+        v /= radix; // v/=radix uses less CPU clocks than v=v/radix does
+        if (i < 10)
+          *tp++ = i+'0';
+        else
+          *tp++ = i + 'a' - 10;
     }
-    if(key == KEY_CTRL_MENU){
-        return false;
+
+    int len = tp - tmp;
+
+    if (sign) 
+    {
+        *sp++ = '-';
+        len++;
     }
-    return true;
+
+    while (tp > tmp)
+        *sp++ = *--tp;
+
+    return len;
+    }
 }
 
 void main(){
@@ -75,10 +116,10 @@ void main(){
     meshes[0] = mesh;
     cam.position = Vector3(0,0,10);
     cam.target = Vector3(0,0,0);
+    mesh.position = Vector3(0,0,10);
     while(handle_keys()){
-        eng.clear();
-        //get_key();
         
+        eng.clear();
         mesh.rotation.x += 0.02;
         mesh.rotation.y += 0.02;
         meshes[0] = mesh;
