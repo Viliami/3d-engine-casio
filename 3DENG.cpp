@@ -116,7 +116,7 @@ void main(){
     meshes[0] = mesh;
     cam.position = Vector3(0,0,10);
     cam.target = Vector3(0,0,0);
-    mesh.position = Vector3(0,0,10);
+    mesh.position = Vector3(0,0,0);
     while(handle_keys()){
         
         eng.clear();
