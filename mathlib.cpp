@@ -126,7 +126,17 @@ class Matrix4{
         double a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
         
         Matrix4(){
-            
+            this->identity();
+        }
+        
+        Matrix4 identity(){
+            this->a = this->f = this->k = this->p = 1.0;
+            this->b = this->c = this->d = this->e = this->g = this->h = this->i = this->j = this->l = this->m = this->n = this->o = 0;
+            return *this;
+        }
+        
+        Matrix4 new_identity(){
+            return Matrix4();
         }
         
         Matrix4 operator * (Matrix4 other){
@@ -404,14 +414,13 @@ class Matrix4{
             p.x = a.a * b.x + a.b * b.y + a.c * b.z + a.d;
             p.y = a.e * b.x + a.f * b.y + a.g * b.z + a.h;
             p.z = a.i * b.x + a.j * b.y + a.k * b.z + a.l;
-            /*double w = a.m * b.x + a.n * b.y + a.o * b.z + a.p;
+            double w = a.m * b.x + a.n * b.y + a.o * b.z + a.p;
             
             if(w != 0){
                 p.x /= w;
                 p.y /= w;
                 p.z /= w;
             }
-            */
             return p;
         }
         
