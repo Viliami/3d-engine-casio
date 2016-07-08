@@ -50,6 +50,16 @@ class Vector3{
             return *this;
         }
         
+        Vector3 normalized(){
+            double d = this->magnitude();
+            if(d != 0){
+                return Vector3( this->x / d,
+                                this->y / d,
+                                this->z / d);
+            }
+            return Vector3(this->x, this->y, this->z);
+        }
+        
         Vector3 dot(Vector3 other){
             return this->x * other.x +
                    this->y * other.y +
@@ -58,7 +68,7 @@ class Vector3{
         
         Vector3 cross(Vector3 other){
             return Vector3(this->y * other.z - this->z * other.y,
-                           this->z * other.x - this->x * other.z,
+                           -this->x * other.z + this->z * other.x,
                            this->x * other.y - this->y * other.x);
         }
         
@@ -350,9 +360,26 @@ class Matrix4{
         }
         
         Matrix4 new_look_at(Vector3 eye, Vector3 at, Vector3 up){
-            Vector3 z = (eye - at).normalize();
-            Vector3 x = up.cross(z).normalize();
-            Vector3 y = z.cross(x);
+            Vector3 z = (eye - at).normalized();  //"forward" vector
+            Vector3 x = up.cross(z).normalized(); //"right" vector
+            Vector3 y = z.cross(x);              //"up" vector
+            Matrix4 a = Matrix4().new_rotate_triple_axis(x, y, z);
+            a.d = eye.x;
+            a.h = eye.y;
+            a.l = eye.z;
+            return a;
+        }
+        
+        Matrix4 new_fps_view(Vector3 eye, double pitch, double yaw){
+            double cosPitch = cos(pitch);
+            double sinPitch = sin(pitch);
+            double cosYaw   = cos(yaw);
+            double sinYaw   = sin(yaw);
+            
+            Vector3 x = Vector3(cosYaw, 0, -sinYaw);
+            Vector3 y = Vector3(sinYaw * sinPitch, cosPitch, cosYaw * sinPitch);
+            Vector3 z = Vector3(sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw);
+            
             Matrix4 a = Matrix4().new_rotate_triple_axis(x, y, z);
             a.d = eye.x;
             a.h = eye.y;
@@ -429,3 +456,30 @@ class Matrix4{
             return *this;
         }
 };
+
+double abs(double x){
+    if(x < 0){
+        return -x;
+    }
+    return x;
+}
+
+double getDistance(int x1, int x2, int y1, int y2){
+    double xdiff = abs(x1-x2);
+    double ydiff = abs(y1-y2);
+    return sqrt((xdiff*xdiff)+(ydiff*ydiff));
+}
+
+double getDistance(Vector2 v1, Vector2 v2){
+    double xdiff = abs(v1.x-v2.x);
+    double ydiff = abs(v1.y-v2.y);
+    return sqrt((xdiff*xdiff)+(ydiff*ydiff));
+    
+}
+
+double getDistance(Vector3 v1, Vector3 v2){
+    double xdiff = abs(v1.x-v2.x);
+    double ydiff = abs(v1.y-v2.y);
+    double zdiff = abs(v1.z-v2.z);
+    return sqrt((xdiff*xdiff)+(ydiff*ydiff)+(zdiff*zdiff));
+}
