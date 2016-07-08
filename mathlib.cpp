@@ -456,30 +456,3 @@ class Matrix4{
             return *this;
         }
 };
-
-double abs(double x){
-    if(x < 0){
-        return -x;
-    }
-    return x;
-}
-
-double getDistance(int x1, int x2, int y1, int y2){
-    double xdiff = abs(x1-x2);
-    double ydiff = abs(y1-y2);
-    return sqrt((xdiff*xdiff)+(ydiff*ydiff));
-}
-
-double getDistance(Vector2 v1, Vector2 v2){
-    double xdiff = abs(v1.x-v2.x);
-    double ydiff = abs(v1.y-v2.y);
-    return sqrt((xdiff*xdiff)+(ydiff*ydiff));
-    
-}
-
-double getDistance(Vector3 v1, Vector3 v2){
-    double xdiff = abs(v1.x-v2.x);
-    double ydiff = abs(v1.y-v2.y);
-    double zdiff = abs(v1.z-v2.z);
-    return sqrt((xdiff*xdiff)+(ydiff*ydiff)+(zdiff*zdiff));
-}
