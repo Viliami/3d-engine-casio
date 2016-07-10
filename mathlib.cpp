@@ -205,16 +205,7 @@ class Matrix4{
             return c;
         }
         
-        Vector3 operator * (Vector3 b){
-            Matrix4 a = *this;
-            Vector3 v = Vector3(0,0,0);
-            v.x = a.a * b.x + a.b * b.y + a.c * b.z;
-            v.y = a.e * b.x + a.f * b.y + a.g * b.z;
-            v.z = a.i * b.x + a.j * b.y + a.k * b.z;
-            return v;
-        }
-        
-        Matrix4 multiply(Matrix4 other){
+        Matrix4 operator *=  (Matrix4 other){
             double Aa = this->a;
             double Ab = this->b;
             double Ac = this->c;
@@ -266,7 +257,19 @@ class Matrix4{
             c.n = Am * Bb + An * Bf + Ao * Bj + Ap * Bn;
             c.o = Am * Bc + An * Bg + Ao * Bk + Ap * Bo;
             c.p = Am * Bd + An * Bh + Ao * Bl + Ap * Bp;
+            
+            *this = c;
+            
             return c;
+        }
+        
+        Vector3 operator * (Vector3 b){
+            Matrix4 a = *this;
+            Vector3 v = Vector3(0,0,0);
+            v.x = a.a * b.x + a.b * b.y + a.c * b.z;
+            v.y = a.e * b.x + a.f * b.y + a.g * b.z;
+            v.z = a.i * b.x + a.j * b.y + a.k * b.z;
+            return v;
         }
         
         Matrix4 new_rotatex(double angle){
