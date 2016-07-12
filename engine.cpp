@@ -53,7 +53,7 @@ extern "C"{
     }
     
     void Engine::draw_line(int x1,int y1,int x2,int y2,int color){
-        int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+        /*int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
         dx = x2-x1;
         dy = y2-y1;
         dx1 = fabs(dx);
@@ -110,13 +110,100 @@ extern "C"{
                 }
                 this->put_pixel(x,y,color);
             }
-        }
+        }*/
+        Bdisp_DrawLineVRAM(x1, y1, x2, y2);
     }
     
     void Engine::draw_rect(int x, int y, int w, int h, int color){
         for(int ix = x;ix < x+w; ix++){
             for(int iy = y; iy < y+h; iy++){
                 this->put_pixel(ix,iy, color);
+            }
+        }
+    }
+    
+    double max(double n0, double n1){
+        return (n0 > n1) ? n0:n1;
+    }
+    
+    double min(double n0, double n1){
+        return (n0 > n1) ? n1:n0;
+    }
+    
+    double clamp(double value, double mn = 0.0, double mx = 1.0){
+        return max(mn, min(value, mx));
+    }
+    
+    double interpolate(double min, double max, double gradient){
+        return min + (max - min) * clamp(gradient);
+    }
+    
+    void Engine::processScanLine(int y, Vector2 va, Vector2 vb, Vector2 vc, Vector2 vd, int color){
+        double g1 = ((va.y != vb.y) ? ((double)(y - va.y)/(vb.y-va.y)) : 1);
+        double g2 = ((vc.y != vd.y) ? ((double)(y - vc.y)/(vd.y-vc.y)) : 1);
+    
+        double sx = interpolate(va.x, vb.x, g1);
+        double ex = interpolate(vc.x, vd.x, g2);
+        
+        /*int z1 = interpolate(va.z, vb.z, g1);
+        int z2 = interpolate(vc.z, vd.z, g2);*/
+        
+        for(int x = int(sx); x < int(ex); x++){
+            //int grad = (x-sx)/(ex-sx);
+            //int z = interpolate(z1, z2, grad);
+            this->put_pixel(x,y, color);
+        }
+    }
+    
+    void Engine::fill_triangle(Vector2 v0, Vector2 v1, Vector2 v2, int color){
+        Vector2 temp;
+        if(v0.y > v1.y){
+            temp = v1;
+            v1 = v0;
+            v0 = temp;
+        }
+        
+        if(v1.y > v2.y){
+            temp = v1;
+            v1 = v2;
+            v2 = temp;
+        }
+        
+        if(v0.y > v1.y){
+            temp = v1;
+            v1 = v0;
+            v0 = temp;
+        }
+        
+        double dv0v1 = 0, dv0v2 = 0;
+        
+        if(v1.y - v0.y > 0){
+            dv0v1 = (v1.x - v0.x) / (v1.y - v0.y);
+        }else{
+            dv0v1 = 0;
+        }
+        
+        if(v2.y - v0.y > 0){
+            dv0v2 = (v2.x - v0.x) / (v2.y - v0.y);
+        }else{
+            dv0v2 = 0;
+        }
+        
+        if(dv0v1 > dv0v2){
+            for(int y = v0.y; y < v2.y+1; y++){
+                if(y < v1.y){
+                    processScanLine(y, v0, v2, v0, v1, color);
+                }else{
+                    processScanLine(y, v0, v2, v1, v2, color);
+                }
+            }
+        }else{
+            for(int y = v0.y; y < v2.y+1; y++){
+                if(y < v1.y){
+                    processScanLine(y, v0, v1, v0, v2, color);
+                }else{
+                    processScanLine(y, v1, v2, v0, v2, color);
+                }
             }
         }
     }
@@ -287,42 +374,46 @@ void Engine::render(Camera camera, Mesh* meshes[], int numMeshes){
             int b = mesh->faces[j].b;
             int c = mesh->faces[j].c;
             
-            
             Vector3 vertexA = mesh->vertices[a];
             Vector3 vertexB = mesh->vertices[b];
             Vector3 vertexC = mesh->vertices[c];
-            
-            double distanceA = getDistance(vertexA, vertexB);
-            double distanceB = getDistance(vertexB, vertexC);
-            double distanceC = getDistance(vertexC, vertexA);
-            
-            double max;
-            int max_c;
-            
-            if(distanceA > distanceB){
-                max = distanceA;
-                max_c = 0;
-            }else{
-                max = distanceB;
-                max_c = 1;
-            }
-            
-            if(distanceC > max){
-                max_c = 2;
-            }
             
             Vector2 pixelA = this->project(vertexA, transformMatrix);
             Vector2 pixelB = this->project(vertexB, transformMatrix);
             Vector2 pixelC = this->project(vertexC, transformMatrix);
             
-            if(max_c != 0){
-                this->draw_thick_line(pixelA.x, pixelA.y, pixelB.x, pixelB.y, mesh->line_thickness, BLACK);
-            }
-            if(max_c != 1){
-                this->draw_thick_line(pixelB.x, pixelB.y, pixelC.x, pixelC.y, mesh->line_thickness,  BLACK);
-            }
-            if(max_c != 2){
-                this->draw_thick_line(pixelC.x, pixelC.y, pixelA.x, pixelA.y, mesh->line_thickness,  BLACK);
+            if(!mesh->filled){
+                
+                double distanceA = getDistance(vertexA, vertexB);
+                double distanceB = getDistance(vertexB, vertexC);
+                double distanceC = getDistance(vertexC, vertexA);
+                
+                double max;
+                int max_c;
+                
+                if(distanceA > distanceB){
+                    max = distanceA;
+                    max_c = 0;
+                }else{
+                    max = distanceB;
+                    max_c = 1;
+                }
+                
+                if(distanceC > max){
+                    max_c = 2;
+                }
+                
+                if(max_c != 0){
+                    this->draw_thick_line(pixelA.x, pixelA.y, pixelB.x, pixelB.y, mesh->line_thickness, BLACK);
+                }
+                if(max_c != 1){
+                    this->draw_thick_line(pixelB.x, pixelB.y, pixelC.x, pixelC.y, mesh->line_thickness,  BLACK);
+                }
+                if(max_c != 2){
+                    this->draw_thick_line(pixelC.x, pixelC.y, pixelA.x, pixelA.y, mesh->line_thickness,  BLACK);
+                }
+            }else{
+                this->fill_triangle(pixelA, pixelB, pixelC, BLACK);
             }
         }
         this->fps_counter++;
