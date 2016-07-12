@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "stdlib.h"
 #define BLACK 1
 #define WHITE 0
 
@@ -32,6 +33,8 @@ double getDistance(Vector3 v1, Vector3 v2){
 Engine::Engine(int width, int height){
     this->width = width;
     this->height = height;
+    this->fps = 0;
+    this->fps_counter = 0;
 }
 
 extern "C"{
@@ -120,7 +123,7 @@ extern "C"{
     
     void Engine::draw_thick_line(int x0, int y0, int x1, int y1, int thickness, int color){
         bool steep;
-        int iTmp, dx, dy, error, ystep, x, y, xthickOver2, ythickOver2;
+        int iTmp, dx, dy, error, ystep, y, xthickOver2, ythickOver2;
 
         steep = abs(y1 - y0) > abs(x1 - x0);
         if(steep){
@@ -215,6 +218,42 @@ extern "C"{
     }
 }
 
+int itoa(int value, char *sp, int radix){
+        char tmp[16];// be careful with the length of the buffer
+        char *tp = tmp;
+        int i;
+        unsigned v;
+
+        int sign = (radix == 10 && value < 0);    
+        if (sign)
+            v = -value;
+        else
+            v = (unsigned)value;
+
+        while (v || tp == tmp)
+        {
+            i = v % radix;
+            v /= radix; // v/=radix uses less CPU clocks than v=v/radix does
+            if (i < 10)
+              *tp++ = i+'0';
+            else
+              *tp++ = i + 'a' - 10;
+        }
+
+        int len = tp - tmp;
+
+        if (sign) 
+        {
+            *sp++ = '-';
+            len++;
+        }
+
+        while (tp > tmp)
+            *sp++ = *--tp;
+
+        return len;
+    }
+
 void Engine::render(Camera camera, Mesh* meshes[], int numMeshes){
     Matrix4 viewMatrix = Matrix4().new_look_at(camera.position, camera.target, Vector3(0,1,0));
     Matrix4 projectionMatrix = Matrix4().new_perspective(0.98, (this->width/this->height), 0.01, 10.0);
@@ -286,6 +325,18 @@ void Engine::render(Camera camera, Mesh* meshes[], int numMeshes){
                 this->draw_thick_line(pixelC.x, pixelC.y, pixelA.x, pixelA.y, mesh->line_thickness,  BLACK);
             }
         }
+        this->fps_counter++;
         
+        this->printFPS();
     }
+}
+
+void Engine::printFPS(){
+    itoa(fps, this->temp, 10);
+    PrintXY(1,1,(const unsigned char *)this->temp,0);
+}
+
+void Engine::updateFPS(){
+    this->fps = this->fps_counter;
+    this->fps_counter = 0;
 }
