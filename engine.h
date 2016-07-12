@@ -6,8 +6,9 @@ extern "C"{
 }
 class Engine{
     public:
-        int width;
-        int height;
+        int width, height;
+        int fps, fps_counter;
+        char temp[16];
         Engine(int width = 128, int height = 64);
         void clear();
         void present();
@@ -19,5 +20,6 @@ class Engine{
         void draw_point(Vector2 point);
         void render(Camera camera, Mesh* meshes[], int numMeshes = 1);
         Mesh load_obj(const FONTCHARACTER *filename);
-        
+        void updateFPS();
+        void printFPS();
 };
