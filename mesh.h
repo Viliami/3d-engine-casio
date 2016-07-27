@@ -16,15 +16,19 @@ class Mesh{
     public:    
         Vector3 rotation;
         Vector3 position;
-        Vector3 vertices[8];
-        Face faces[12];
+        //Vector3 vertices[8];
+        //Face faces[12];
+        Vector3 *vertices;
+        Face *faces;
         int numVertices, numFaces;
         int type, color, line_thickness;
-        Matrix4 transformMatrix;
+        //Matrix4 transformMatrix;
         bool shown, filled;
         Mesh(int verticesCount = 0, int facesCount = 0, int type = 0, int color = 1){
             this->numVertices = verticesCount;
             this->numFaces = facesCount;
+            this->vertices = new Vector3[verticesCount];
+            this->faces = new Face[facesCount];
             this->type = type;
             this->color = color;
             this->shown = true;
@@ -32,7 +36,7 @@ class Mesh{
             this->filled = false;
         };
         
-        Matrix4 build_transformMatrix(Camera cam){
+        /*Matrix4 build_transformMatrix(Camera cam){
             
             Vector3 mRotation = this->rotation;
             Matrix4 viewMatrix = Matrix4().new_look_at(cam.position, cam.target, Vector3(0,1,0));
@@ -52,5 +56,5 @@ class Mesh{
             this->transformMatrix *= worldMatrix;
             
             return this->transformMatrix;
-        };
+        };*/
 };
