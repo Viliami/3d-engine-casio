@@ -1,0 +1,16 @@
+[DLSimProject]
+Name=3DENG
+Version=1.00.0000
+Model=:fx-9860G.dlm
+SourcePath=SRC;.
+MemoryPath=INIT
+MemCardPath=SDCard
+
+[Program1]
+Program=3DENG.G1A
+Debug=Debug\FXADDINror.dbg
+LoadAddress=80000000:90100000
+
+[Files]
+SourceFile=:3DENG.cpp
+SourceFile=:engine.cpp
