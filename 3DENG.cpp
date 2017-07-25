@@ -193,8 +193,8 @@ extern "C"{
 //****************************************************************************
 
 unsigned int key1, key2, unused;
-Mesh mesh = Mesh(8);
-Mesh meshes[1];
+Mesh* mesh;
+Mesh* meshes[1];
 bool rotating = false;
 int rotation_counter = 0;
 
@@ -208,10 +208,10 @@ extern "C"{
     void rotate(int direction, double rotation){
         switch(direction){
             case LEFT:
-                mesh.rotation.z-=rotation;
+                mesh->rotation.z-=rotation;
                 break;
             case RIGHT:
-                mesh.rotation.z+=rotation;
+                mesh->rotation.z+=rotation;
                 break;
             case UP:
                 break;
@@ -222,48 +222,48 @@ extern "C"{
     
     void rotate_left(){
         rotating = true;
-        mesh.rotation.z -= 0.08;
+        mesh->rotation.z -= 0.08;
         if(rotation_counter >= 20){
             KillTimer(ID_USER_TIMER1);
             rotating = false;
             rotation_counter = 0;
-            mesh.rotation.z = 0.0;
+            mesh->rotation.z = 0.0;
         }
         rotation_counter++;
     }
     
     void rotate_right(){
         rotating = true;
-        mesh.rotation.z += 0.08;
+        mesh->rotation.z += 0.08;
         if(rotation_counter >= 20){
             KillTimer(ID_USER_TIMER1);
             rotating = false;
             rotation_counter = 0;
-            mesh.rotation.z = 0.0;
+            mesh->rotation.z = 0.0;
         }
         rotation_counter++;
     }
     
     void rotate_down(){
         rotating = true;
-        mesh.rotation.x += 0.08;
+        mesh->rotation.x += 0.08;
         if(rotation_counter >= 20){
             KillTimer(ID_USER_TIMER1);
             rotating = false;
             rotation_counter = 0;
-            mesh.rotation.x = 0.0;
+            mesh->rotation.x = 0.0;
         }
         rotation_counter++;
     }
     
     void rotate_up(){
         rotating = true;
-        mesh.rotation.x -= 0.08;
+        mesh->rotation.x -= 0.08;
         if(rotation_counter >= 20){
             KillTimer(ID_USER_TIMER1);
             rotating = false;
             rotation_counter = 0;
-            mesh.rotation.x = 0.0;
+            mesh->rotation.x = 0.0;
         }
         rotation_counter++;
     }
@@ -350,39 +350,39 @@ extern "C"{
 void main(){
     Engine eng = Engine();
     Camera cam = Camera();
-    mesh.vertices[0] = Vector3(-1, 1, 1); 
-    mesh.vertices[1] = Vector3(1, 1, 1); 
-    mesh.vertices[2] = Vector3(-1,-1,1);
-    mesh.vertices[3] = Vector3(1,-1,1);
-    mesh.vertices[4] = Vector3(-1, 1, -1);
-    mesh.vertices[5] = Vector3(1,1,-1);
-    mesh.vertices[6] = Vector3(1,-1,-1);
-    mesh.vertices[7] = Vector3(-1,-1,-1);
+	mesh = new Mesh(8, 12, 0);
+    mesh->vertices[0] = Vector3(-1, 1, 1); 
+    mesh->vertices[1] = Vector3(1, 1, 1); 
+    mesh->vertices[2] = Vector3(-1,-1,1);
+    mesh->vertices[3] = Vector3(1,-1,1);
+    mesh->vertices[4] = Vector3(-1, 1, -1);
+    mesh->vertices[5] = Vector3(1,1,-1);
+    mesh->vertices[6] = Vector3(1,-1,-1);
+    mesh->vertices[7] = Vector3(-1,-1,-1);
     
-    mesh.faces[0] = Face(0, 1, 2);
-    mesh.faces[1] = Face(1, 2, 3);
-    mesh.faces[2] = Face(1, 3, 6);
-    mesh.faces[3] = Face(1, 5, 6);
-    mesh.faces[4] = Face(0, 1, 4);
-    mesh.faces[5] = Face(1, 4, 5);
+    mesh->faces[0] = Face(0, 1, 2);
+    mesh->faces[1] = Face(1, 2, 3);
+    mesh->faces[2] = Face(1, 3, 6);
+    mesh->faces[3] = Face(1, 5, 6);
+    mesh->faces[4] = Face(0, 1, 4);
+    mesh->faces[5] = Face(1, 4, 5);
 
-    mesh.faces[6] = Face(2, 3, 7);
-    mesh.faces[7] = Face(3, 6, 7);
-    mesh.faces[8] = Face(0, 2, 7);
-    mesh.faces[9] = Face(0, 4, 7);
-    mesh.faces[10]= Face(4, 5, 6);
-    mesh.faces[11]= Face(4, 6, 7);
+    mesh->faces[6] = Face(2, 3, 7);
+    mesh->faces[7] = Face(3, 6, 7);
+    mesh->faces[8] = Face(0, 2, 7);
+    mesh->faces[9] = Face(0, 4, 7);
+    mesh->faces[10]= Face(4, 5, 6);
+    mesh->faces[11]= Face(4, 6, 7);
     
     meshes[0] = mesh;
     cam.position = Vector3(0,0,10);
     cam.target = Vector3(0,0,0);
-    mesh.position = Vector3(0,0,0);
+    mesh->position = Vector3(0,0,0);
     while(handle_keys()){
         
         eng.clear();
-        mesh.rotation.x += 0.02;
-        mesh.rotation.y += 0.02;
-        meshes[0] = mesh;
+        mesh->rotation.x += 0.02;
+        mesh->rotation.y += 0.02;
         
         eng.render(cam, meshes);
         
