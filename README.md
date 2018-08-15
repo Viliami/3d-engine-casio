@@ -3,3 +3,6 @@
 
 #### Demonstration
 ![Demo Screenshot](demo.gif)
+
+#### Example Game
+![Bloxorz Screenshot](bloxorz.gif)
